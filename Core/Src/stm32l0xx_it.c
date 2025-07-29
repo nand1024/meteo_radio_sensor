@@ -148,7 +148,7 @@ void LPTIM1_IRQHandler(void)
   /* USER CODE BEGIN LPTIM1_IRQn 0 */
     if (LL_LPTIM_IsActiveFlag_ARRM(LPTIM1))  // Якщо спрацювало переповнення
     {
-    	LL_LPTIM_ClearFlag_ARRM(LPTIM1);  // Очистити флаг переривання
+        LL_LPTIM_ClearFlag_ARRM(LPTIM1);  // Очистити флаг переривання
     }
   /* USER CODE END LPTIM1_IRQn 0 */
   /* USER CODE BEGIN LPTIM1_IRQn 1 */

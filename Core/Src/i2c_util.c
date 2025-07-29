@@ -31,11 +31,11 @@ static i2c_op_res wait_signal_txe (uint16_t timeout)
     } while (time_ticks < timeout && LL_I2C_IsActiveFlag_TXE(I2C_PERIPH) == 0 && LL_I2C_IsActiveFlag_NACK(I2C1) == 0);
 
     if (LL_I2C_IsActiveFlag_NACK(I2C1) != 0 ) {
-    	res = i2c_op_err_nack;
+        res = i2c_op_err_nack;
     } else if (time_ticks >= timeout) {
-    	res = i2c_op_err_timeout;
+        res = i2c_op_err_timeout;
     } else {
-    	res = i2c_op_succes;
+        res = i2c_op_succes;
     }
 
     return res;
@@ -57,9 +57,9 @@ static i2c_op_res wait_signal_rxe (uint16_t timeout)
     } while (time_ticks < timeout && LL_I2C_IsActiveFlag_RXNE(I2C_PERIPH) == 0);
 
     if (time_ticks >= timeout) {
-    	res = i2c_op_err_timeout;
+        res = i2c_op_err_timeout;
     } else {
-    	res = i2c_op_succes;
+        res = i2c_op_succes;
     }
 
     return res;
@@ -78,9 +78,9 @@ static i2c_op_res wait_signal_ack (uint16_t timeout)
     } while (time_ticks < timeout && LL_I2C_IsActiveFlag_NACK(I2C_PERIPH) != 0);
 
     if (time_ticks >= timeout) {
-    	res = i2c_op_err_timeout;
+        res = i2c_op_err_timeout;
     } else {
-    	res = i2c_op_succes;
+        res = i2c_op_succes;
     }
 
     return res;
@@ -201,13 +201,13 @@ i2c_op_res i2c_read255 (uint8_t adress, uint8_t *reg_adr, uint8_t size_reg_adr, 
     }
 
     //початок сессії читання та очікування відповіді від slave
-	LL_I2C_HandleTransfer(I2C_PERIPH,
-						  adress << 1,
-						  LL_I2C_ADDRSLAVE_7BIT,
-						  size,
-						  LL_I2C_MODE_SOFTEND,
-						  LL_I2C_GENERATE_RESTART_7BIT_READ);
-	res = wait_signal_ack(_max_time_out);
+    LL_I2C_HandleTransfer(I2C_PERIPH,
+                          adress << 1,
+                          LL_I2C_ADDRSLAVE_7BIT,
+                          size,
+                          LL_I2C_MODE_SOFTEND,
+                          LL_I2C_GENERATE_RESTART_7BIT_READ);
+    res = wait_signal_ack(_max_time_out);
     if (res != i2c_op_succes) {
         //timeout_err = 1;
         LL_I2C_GenerateStopCondition(I2C_PERIPH);
@@ -216,7 +216,7 @@ i2c_op_res i2c_read255 (uint8_t adress, uint8_t *reg_adr, uint8_t size_reg_adr, 
 
     //отримання даних
     for (uint8_t i = 0; i < size; i++) {
-    	res = wait_signal_rxe(_max_time_out);
+        res = wait_signal_rxe(_max_time_out);
         if (res != i2c_op_succes) {
             //timeout_err = 1;
             LL_I2C_GenerateStopCondition(I2C_PERIPH);

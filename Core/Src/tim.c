@@ -58,10 +58,10 @@ void MX_TIM2_Init(void)
 /* USER CODE BEGIN 1 */
 void delay_us(uint32_t us)
 {//шаг 99.18мкс, что для данной задачи достаточно
-	uint32_t us_per_tick = 100;
-	uint32_t now = LL_TIM_GetCounter(TIM2);
-	uint32_t max_cnt = LL_TIM_GetAutoReload(TIM2);
-	uint32_t wait_ticks = (us / us_per_tick + now) % max_cnt;
-	while(LL_TIM_GetCounter(TIM2) != wait_ticks);
+    uint32_t us_per_tick = 100;
+    uint32_t now = LL_TIM_GetCounter(TIM2);
+    uint32_t max_cnt = LL_TIM_GetAutoReload(TIM2);
+    uint32_t wait_ticks = (us / us_per_tick + now) % max_cnt;
+    while(LL_TIM_GetCounter(TIM2) != wait_ticks);
 }
 /* USER CODE END 1 */

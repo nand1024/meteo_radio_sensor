@@ -12,12 +12,12 @@
 
 
 typedef enum {
-	i2c_op_succes,
-	i2c_op_err_arg,
-	i2c_op_err_start,
-	i2c_op_err_restart,
-	i2c_op_err_nack,
-	i2c_op_err_timeout,
+    i2c_op_succes,
+    i2c_op_err_arg,
+    i2c_op_err_start,
+    i2c_op_err_restart,
+    i2c_op_err_nack,
+    i2c_op_err_timeout,
 } i2c_op_res;
 
 uint8_t i2c_is_device_conected (uint8_t val); //потрібно для деяких бібліотек, в цій реалізації просто повертається 1, незалежно від наявності пристрою

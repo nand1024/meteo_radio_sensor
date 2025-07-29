@@ -5,8 +5,8 @@
 #include "NRF24_USER_DEFINITION.h"
 
 typedef enum{
-	tx_ok,	//ack received
-	tx_err  //ack no received
+    tx_ok,  //ack received
+    tx_err  //ack no received
 }nrf24l01_tx_res;
 
 void nrf24l01_power_down();

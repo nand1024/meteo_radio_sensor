@@ -44,8 +44,8 @@ typedef enum {
  * який буде передаватися через параметр reg_cmd
  */
 typedef struct {
-	i2c_op_res (*i2c_write) (uint8_t adress, uint8_t *reg_cmd, uint8_t size_reg, uint8_t *data, uint32_t size);
-	i2c_op_res (*i2c_read) (uint8_t adress, uint8_t *reg_cmd, uint8_t size_reg, uint8_t *data, uint32_t size);
+    i2c_op_res (*i2c_write) (uint8_t adress, uint8_t *reg_cmd, uint8_t size_reg, uint8_t *data, uint32_t size);
+    i2c_op_res (*i2c_read) (uint8_t adress, uint8_t *reg_cmd, uint8_t size_reg, uint8_t *data, uint32_t size);
 } SHT20CB;
 
 

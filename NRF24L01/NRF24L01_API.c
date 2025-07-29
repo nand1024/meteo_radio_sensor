@@ -6,7 +6,7 @@
 
 static void init_tx()
 {
-	//очищаємо буфери rx tx
+    //очищаємо буфери rx tx
     hal_nrf_flush_rx();
     hal_nrf_flush_tx();
 
@@ -25,13 +25,13 @@ static void init_tx()
 
 void nrf24l01_power_down()
 {
-	hal_nrf_set_power_mode(HAL_NRF_PWR_DOWN);
+    hal_nrf_set_power_mode(HAL_NRF_PWR_DOWN);
 }
 
 
 nrf24l01_tx_res nrf24l01_transmit_data(uint8_t tx[], uint8_t size)
 {
-	nrf24l01_tx_res result;
+    nrf24l01_tx_res result;
     uint8_t irq_flg;
 
     //вмикаємо радіомодуль
@@ -64,7 +64,7 @@ nrf24l01_tx_res nrf24l01_transmit_data(uint8_t tx[], uint8_t size)
         hal_nrf_flush_tx();
         result = tx_err;
     } else {// tx ok
-    	result = tx_ok;
+        result = tx_ok;
     }
 
     // переводим радіомодуль в режим "сну"

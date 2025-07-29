@@ -67,77 +67,77 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 int __io_putchar(int ch)//колбек для роботи функції printf з виводом по uart, необхідно лише під час трасування
 {
-	LL_USART_TransmitData8(USART2, ch);
-	while(!LL_USART_IsActiveFlag_TXE(USART2));
-	return ch;
+    LL_USART_TransmitData8(USART2, ch);
+    while(!LL_USART_IsActiveFlag_TXE(USART2));
+    return ch;
 }
 
 void serialize(int16_t val, uint8_t *arr)
 {
-	arr[0] = val >> 8;
-	arr[1] = val & 0xFF;
+    arr[0] = val >> 8;
+    arr[1] = val & 0xFF;
 }
 
 void deserialize(int16_t *val, uint8_t *arr)
 {
-	*val = arr[0];
-	*val <<= 8;
-	*val |= arr[1];
+    *val = arr[0];
+    *val <<= 8;
+    *val |= arr[1];
 }
 
 void enter_stop_mode()
 {
-	//конфігурація PWR живлення для deep sleep
-	LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE3);	   //1.2v напруга живлення регулятора
-	LL_PWR_SetRegulModeDS(LL_PWR_REGU_DSMODE_LOW_POWER);		   //переключення на режим низького споживання, коли переходимо в deep sleep
-	LL_PWR_SetPowerMode(LL_PWR_MODE_STOP);						   //режим mode stop при входження в deep sleep
-	//-------------------
-	LL_PWR_ClearFlag_WU();										   //очищаємо прапорець переривання Wake-up
-	LL_EXTI_EnableIT_0_31(LL_EXTI_LINE_29);						   //вмикажмо EXTI переривання для LPTIM1
-    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;  						   // Увімкнути режим Sleep Deep
-	LL_RCC_SetClkAfterWakeFromStop(LL_RCC_STOP_WAKEUPCLOCK_MSI);   //при пробудженні задіюємо MSI як джерело тактування
-	LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_29);					   //знімаємо прапорець EXTI переривання для LPTIM1
-	//запускаємо таймер LPTIM1 по перериванню якого будемо пробуджуватися
-    LL_LPTIM_Enable(LPTIM1);									   //вмикаємо LPTIM1
-    LL_LPTIM_SetAutoReload(LPTIM1, 0xFFFF);						   //для цього проекту ставимо максимальне значення відліку
+    //конфігурація PWR живлення для deep sleep
+    LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE3);     //1.2v напруга живлення регулятора
+    LL_PWR_SetRegulModeDS(LL_PWR_REGU_DSMODE_LOW_POWER);           //переключення на режим низького споживання, коли переходимо в deep sleep
+    LL_PWR_SetPowerMode(LL_PWR_MODE_STOP);                         //режим mode stop при входження в deep sleep
+    //-------------------
+    LL_PWR_ClearFlag_WU();                                         //очищаємо прапорець переривання Wake-up
+    LL_EXTI_EnableIT_0_31(LL_EXTI_LINE_29);                        //вмикажмо EXTI переривання для LPTIM1
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;                             //Увімкнути режим Sleep Deep
+    LL_RCC_SetClkAfterWakeFromStop(LL_RCC_STOP_WAKEUPCLOCK_MSI);   //при пробудженні задіюємо MSI як джерело тактування
+    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_29);                       //знімаємо прапорець EXTI переривання для LPTIM1
+    //запускаємо таймер LPTIM1 по перериванню якого будемо пробуджуватися
+    LL_LPTIM_Enable(LPTIM1);                                       //вмикаємо LPTIM1
+    LL_LPTIM_SetAutoReload(LPTIM1, 0xFFFF);                        //для цього проекту ставимо максимальне значення відліку
     LL_LPTIM_StartCounter(LPTIM1, LL_LPTIM_OPERATING_MODE_ONESHOT);//запуск одиночного відліку
-    __WFI();  													   // Зупиняємо все і очікуємо переривання
+    __WFI();                                                       //Зупиняємо все і очікуємо переривання
 }
 
 
 uint8_t check_diff_values(int16_t a, int16_t b, int16_t diff_vall)//повертає 1 якщо різниця між двома значеннями >= diff_vall
 {
-	int16_t c = a - b;
-	if (c >= diff_vall || c <= -diff_vall) {
-		return 1;
-	}
-	return 0;
+    int16_t c = a - b;
+    if (c >= diff_vall || c <= -diff_vall) {
+        return 1;
+    }
+    return 0;
 }
 
 void init_all_periph()
 {
-	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-	LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
-	LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
-	/* SysTick_IRQn interrupt configuration */
-	NVIC_SetPriority(SysTick_IRQn, 3);
-	/* Configure the system clock */
-	SystemClock_Config();
-	/** PVD Configuration
-	*/
-	LL_PWR_SetPVDLevel(LL_PWR_PVDLEVEL_2);//встановлюємо детектор напруги на 2.3 вольти
+    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+    LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
+    /* SysTick_IRQn interrupt configuration */
+    NVIC_SetPriority(SysTick_IRQn, 3);
+    /* Configure the system clock */
+    SystemClock_Config();
+    /** PVD Configuration
+    */
+    LL_PWR_SetPVDLevel(LL_PWR_PVDLEVEL_2);//встановлюємо детектор напруги на 2.3 вольти
 
-	/** Enable the PVD Output
-	*/
-	LL_PWR_EnablePVD();//вмикаємо детектор напруги
-	MX_LPTIM1_Init();  //low power таймер для пробудження з sleep deep
-	MX_GPIO_Init();
-	MX_I2C1_Init();
-	//MX_USART2_UART_Init();
-	MX_SPI1_Init();
-	MX_TIM2_Init();
-	nrf24l01_spi_init();
-	nrf24l01_power_down();
+    /** Enable the PVD Output
+    */
+    LL_PWR_EnablePVD();//вмикаємо детектор напруги
+    MX_LPTIM1_Init();  //low power таймер для пробудження з sleep deep
+    MX_GPIO_Init();
+    MX_I2C1_Init();
+    //MX_USART2_UART_Init();
+    MX_SPI1_Init();
+    MX_TIM2_Init();
+    nrf24l01_spi_init();
+    nrf24l01_power_down();
 }
 
 /* USER CODE END 0 */
@@ -150,19 +150,19 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	int16_t now_temp, prew_temp;
-	int16_t now_hum, prew_hum;
-	now_temp = prew_temp = -9999; //ініціалізуємо не існуючим значенням
-	now_hum = prew_hum = -9999;   //ініціалізуємо не існуючим значенням
-	uint8_t low_battery_trigger = 0;
-	uint8_t tx_buffer[SIZE_PAYLOAD] = {0};
-	nrf24l01_tx_res res_tx = tx_err;
+    int16_t now_temp, prew_temp;
+    int16_t now_hum, prew_hum;
+    now_temp = prew_temp = -9999; //ініціалізуємо не існуючим значенням
+    now_hum = prew_hum = -9999;   //ініціалізуємо не існуючим значенням
+    uint8_t low_battery_trigger = 0;
+    uint8_t tx_buffer[SIZE_PAYLOAD] = {0};
+    nrf24l01_tx_res res_tx = tx_err;
 
-	//ініціалізуємо колбеки i2c для датчика sht20
-	SHT20CB sht20CB = {
-		  .i2c_read = i2c_read255,
-		  .i2c_write = i2c_write255,
-	};
+    //ініціалізуємо колбеки i2c для датчика sht20
+    SHT20CB sht20CB = {
+          .i2c_read = i2c_read255,
+          .i2c_write = i2c_write255,
+    };
 
   /* USER CODE END 1 */
 
@@ -222,26 +222,26 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  sht20_get_data(&sht20CB, &now_temp, &now_hum);    //отримуємо дані температури та вологсті повітря
-	if (LL_PWR_IsActiveFlag_PVDO()) {					//якщо спрацював детектор напруги
-		low_battery_trigger = 1;
-	}
-	if (res_tx == tx_err								//якщо попередня передача даних була невдалою
-		|| check_diff_values(now_temp, prew_temp, 25)   //якщо температура змінилась на 0.25 градуси або більше
-		|| check_diff_values(now_hum, prew_hum, 100)) { //якщо волога змінилась на 1% або більше
+      sht20_get_data(&sht20CB, &now_temp, &now_hum);    //отримуємо дані температури та вологсті повітря
+    if (LL_PWR_IsActiveFlag_PVDO()) {                   //якщо спрацював детектор напруги
+        low_battery_trigger = 1;
+    }
+    if (res_tx == tx_err                                //якщо попередня передача даних була невдалою
+        || check_diff_values(now_temp, prew_temp, 25)   //якщо температура змінилась на 0.25 градуси або більше
+        || check_diff_values(now_hum, prew_hum, 100)) { //якщо волога змінилась на 1% або більше
 
-		prew_temp = now_temp;
-		prew_hum = now_hum;
-		tx_buffer[0] = 0xAB;                            //"магічне" число. просто для позначення початку пакету.
-		serialize(now_temp, &tx_buffer[1]);
-		serialize(now_hum, &tx_buffer[3]);
-		tx_buffer[5] = low_battery_trigger ? 'L' : 'H';
-		res_tx = nrf24l01_transmit_data(tx_buffer, SIZE_PAYLOAD);//відправляємо оновленні дані на метеостанцію
-	}
+        prew_temp = now_temp;
+        prew_hum = now_hum;
+        tx_buffer[0] = 0xAB;                            //"магічне" число. просто для позначення початку пакету.
+        serialize(now_temp, &tx_buffer[1]);
+        serialize(now_hum, &tx_buffer[3]);
+        tx_buffer[5] = low_battery_trigger ? 'L' : 'H';
+        res_tx = nrf24l01_transmit_data(tx_buffer, SIZE_PAYLOAD);//відправляємо оновленні дані на метеостанцію
+    }
 
-	enter_stop_mode();//засинаємо... на ~3 хвилин 46 секунд
+    enter_stop_mode();//засинаємо... на ~3 хвилин 46 секунд
 
-	init_all_periph();//ініціалізація після пробудження
+    init_all_periph();//ініціалізація після пробудження
   }
   /* USER CODE END 3 */
 }

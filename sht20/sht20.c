@@ -182,36 +182,36 @@ void sht20_get_data(SHT20CB *shtCB, double *temperature, double *humidity)
 void sht20_get_data (SHT20CB *shtCB, int16_t *temperature, int16_t *humidity)
 #endif
 {
-	for (uint8_t try = 0; try < 5; try++) {
-		i2c_op_res res;
+    for (uint8_t try = 0; try < 5; try++) {
+        i2c_op_res res;
 
-		uint8_t addr_register;
-		uint8_t data[2];
-		uint16_t raw_t, raw_rh;
+        uint8_t addr_register;
+        uint8_t data[2];
+        uint16_t raw_t, raw_rh;
 
-		addr_register = CMD_T_MEAS_HOLD_BY_MASTER;
-		res = shtCB->i2c_read(SHT20_I2C_ADDRESS, &addr_register, sizeof(addr_register), data, sizeof(data));
-		if (res != i2c_op_succes) {
-			delay_us(100);
-			continue;
-		}
-		raw_t = data[0];
-		raw_t <<= 8;
-		raw_t |= data[1];
+        addr_register = CMD_T_MEAS_HOLD_BY_MASTER;
+        res = shtCB->i2c_read(SHT20_I2C_ADDRESS, &addr_register, sizeof(addr_register), data, sizeof(data));
+        if (res != i2c_op_succes) {
+            delay_us(100);
+            continue;
+        }
+        raw_t = data[0];
+        raw_t <<= 8;
+        raw_t |= data[1];
 
-		*temperature = calc_temperature_from_raw(raw_t);
+        *temperature = calc_temperature_from_raw(raw_t);
 
-		addr_register = CMD_RH_MEAS_HOLD_BY_MASTER;
-		res = shtCB->i2c_read(SHT20_I2C_ADDRESS, &addr_register, sizeof(addr_register), data, sizeof(data));
-		if (res != i2c_op_succes) {
-			delay_us(100);
-			continue;
-		}
-		raw_rh = data[0];
-		raw_rh <<= 8;
-		raw_rh |= data[1];
+        addr_register = CMD_RH_MEAS_HOLD_BY_MASTER;
+        res = shtCB->i2c_read(SHT20_I2C_ADDRESS, &addr_register, sizeof(addr_register), data, sizeof(data));
+        if (res != i2c_op_succes) {
+            delay_us(100);
+            continue;
+        }
+        raw_rh = data[0];
+        raw_rh <<= 8;
+        raw_rh |= data[1];
 
-		*humidity = calc_humidity_from_raw(raw_rh);
-		break;
-	}
+        *humidity = calc_humidity_from_raw(raw_rh);
+        break;
+    }
 }
